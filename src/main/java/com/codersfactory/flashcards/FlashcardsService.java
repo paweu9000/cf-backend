@@ -26,4 +26,12 @@ public class FlashcardsService {
     FlashcardDto mapEntity(Flashcard flashcard) {
         return mapper.toDto(flashcard);
     }
+
+    public void saveEntity(Flashcard flashcard) {
+        repository.save(flashcard);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
 }

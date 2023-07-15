@@ -29,7 +29,7 @@ public class FlashcardCollectionsServiceTest {
     @Test
     public void mapDtoTest() {
         CreateFlashcardCollectionDto dto = new CreateFlashcardCollectionDto("title");
-        FlashcardCollection collection = service.mapDto(dto);
+        FlashcardCollection collection = service.mapDTO(dto);
         assertEquals(dto.title(), collection.getTitle());
     }
 
@@ -40,8 +40,7 @@ public class FlashcardCollectionsServiceTest {
         for (int i = 0; i < 10; i++) {
             collection.addCard(new Flashcard(Integer.toUnsignedLong(i), "front"+i, "back"+i, collection));
         }
-        System.out.println("essa");
-        FlashcardCollectionDto check = service.toDto(collection);
+        FlashcardCollectionDto check = service.toDTO(collection);
 
         assertNotNull(check);
         assertEquals(check.title(), collection.getTitle());

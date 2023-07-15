@@ -11,6 +11,7 @@ import java.util.List;
 public class FlashcardCollectionsService {
 
     final FlashcardsMapper mapper = FlashcardsMapper.INSTANCE;
+
     final FlashcardCollectionsRepository repository;
 
     FlashcardCollectionsService(FlashcardCollectionsRepository repository) {
@@ -21,22 +22,22 @@ public class FlashcardCollectionsService {
         return repository.findById(id).orElseThrow();
     }
 
-    FlashcardCollection mapDto(CreateFlashcardCollectionDto dto) {
+    FlashcardCollection mapDTO(CreateFlashcardCollectionDto dto) {
         return mapper.collectionToEntity(dto);
     }
 
-    FlashcardCollectionDto toDto(FlashcardCollection collection) {
+    FlashcardCollectionDto toDTO(FlashcardCollection collection) {
         return mapper.collectionToDto(collection);
     }
 
-    public FlashcardCollection saveByDto(CreateFlashcardCollectionDto dto) {
-        return repository.save(mapDto(dto));
+    public FlashcardCollection saveByDTO(CreateFlashcardCollectionDto dto) {
+        return repository.save(mapDTO(dto));
     }
 
     public FlashcardCollectionDto addCards(Long id, List<CreateFlashcardDto> flashcards) {
         FlashcardCollection collection = repository.findById(id).orElseThrow();
         List<Flashcard> cards = flashcards.stream().map(card -> new Flashcard(card, collection)).toList();
         cards.forEach(collection::addCard);
-        return toDto(repository.save(collection));
+        return toDTO(repository.save(collection));
     }
 }
