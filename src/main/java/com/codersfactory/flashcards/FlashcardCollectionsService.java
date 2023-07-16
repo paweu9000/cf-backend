@@ -3,6 +3,7 @@ package com.codersfactory.flashcards;
 import com.codersfactory.flashcards.dto.CreateFlashcardCollectionDto;
 import com.codersfactory.flashcards.dto.CreateFlashcardDto;
 import com.codersfactory.flashcards.dto.FlashcardCollectionDto;
+import com.codersfactory.flashcards.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class FlashcardCollectionsService {
     }
 
     FlashcardCollection findById(Long id) {
-        return repository.findById(id).orElseThrow();
+        return repository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(FlashcardCollection.class, id));
     }
 
     FlashcardCollection mapDTO(CreateFlashcardCollectionDto dto) {
@@ -35,7 +37,7 @@ public class FlashcardCollectionsService {
     }
 
     public FlashcardCollectionDto addCards(Long id, List<CreateFlashcardDto> flashcards) {
-        FlashcardCollection collection = repository.findById(id).orElseThrow();
+        FlashcardCollection collection = findById(id);
         List<Flashcard> cards = flashcards.stream().map(card -> new Flashcard(card, collection)).toList();
         cards.forEach(collection::addCard);
         return toDTO(repository.save(collection));

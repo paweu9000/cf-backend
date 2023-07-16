@@ -3,6 +3,7 @@ package com.codersfactory.flashcards;
 import com.codersfactory.flashcards.dto.CreateFlashcardCollectionDto;
 import com.codersfactory.flashcards.dto.CreateFlashcardDto;
 import com.codersfactory.flashcards.dto.FlashcardCollectionDto;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/flashcards")
-record FlashcardController(FlashcardsService flashcardsService, FlashcardCollectionsService collectionsService) {
+@AllArgsConstructor
+class FlashcardController {
+
+    final FlashcardsService flashcardsService;
+    final FlashcardCollectionsService collectionsService;
 
     @GetMapping("/collection/{id}")
     ResponseEntity<FlashcardCollection> findCollectionById(@PathVariable Long id) {

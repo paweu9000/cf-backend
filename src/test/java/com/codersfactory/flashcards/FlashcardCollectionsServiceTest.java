@@ -2,6 +2,7 @@ package com.codersfactory.flashcards;
 
 import com.codersfactory.flashcards.dto.CreateFlashcardCollectionDto;
 import com.codersfactory.flashcards.dto.FlashcardCollectionDto;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,8 @@ public class FlashcardCollectionsServiceTest {
     FlashcardCollectionsService service;
 
     @Test
-    public void testNotNull() {
+    @DisplayName("Should initialize mock objects properly")
+    public void shouldVerifyMockObjectsNotNull() {
         assertNotNull(repository);
         assertNotNull(service);
     }
