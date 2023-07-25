@@ -86,7 +86,7 @@ public class FlashcardsServiceTest {
 
     @Test
     public void deleteTest() {
-        service.deleteById(1L);
+        service.deleteById(1L, "username");
         verify(repository).deleteById(1L);
     }
 }
