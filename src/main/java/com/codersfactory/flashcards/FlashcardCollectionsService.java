@@ -31,6 +31,10 @@ public class FlashcardCollectionsService {
         return mapper.collectionToDto(collection);
     }
 
+    FlashcardCollectionDto mapToSortedDto(FlashcardCollection collection) {
+        return mapper.mapToSortedDto(collection);
+    }
+
     public FlashcardCollection saveByDTO(CreateFlashcardCollectionDto dto) {
         return repository.save(mapDTO(dto));
     }
@@ -40,5 +44,10 @@ public class FlashcardCollectionsService {
         List<Flashcard> cards = flashcards.stream().map(card -> new Flashcard(card, collection)).toList();
         cards.forEach(collection::addCard);
         return toDTO(repository.save(collection));
+    }
+
+    FlashcardCollectionDto getCardsInValidState(Long id, Boolean randomized) {
+        if (randomized) return toDTO(findById(id));
+        else return mapToSortedDto(findById(id));
     }
 }

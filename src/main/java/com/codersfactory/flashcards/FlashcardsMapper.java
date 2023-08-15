@@ -8,7 +8,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 interface FlashcardsMapper {
@@ -29,5 +32,12 @@ interface FlashcardsMapper {
         return new FlashcardCollectionDto(collection.getId(),
                 collection.getTitle(),
                 collection.getFlashcards().stream().map(this::toDto).toList());
+    }
+
+    default FlashcardCollectionDto mapToSortedDto(FlashcardCollection collection) {
+        return new FlashcardCollectionDto(collection.getId(),
+                collection.getTitle(),
+                collection.getFlashcards().stream().map(this::toDto)
+                        .sorted(Comparator.comparingLong(FlashcardDto::id)).toList());
     }
 }
