@@ -7,6 +7,7 @@ import com.codersfactory.flashcards.dto.FlashcardDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,20 +25,40 @@ class FlashcardController {
         return new ResponseEntity<>(collectionsService.getCardsInValidState(id, randomized), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+     @GetMapping("/{id}")
     ResponseEntity<FlashcardDto> getFlashcardById(@PathVariable Long id) {
-        return new ResponseEntity<>(flashcardsService.mapEntity(flashcardsService.findById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(flashcardsService.getDtoById(id), HttpStatus.OK);
     }
 
     @PostMapping("/collection")
-    ResponseEntity<FlashcardCollectionDto> createFlashcardCollection(@RequestBody CreateFlashcardCollectionDto dto) {
-        return new ResponseEntity<>(collectionsService.toDTO(collectionsService.saveByDTO(dto)), HttpStatus.OK);
+    ResponseEntity<FlashcardCollectionDto> createFlashcardCollection(@RequestBody CreateFlashcardCollectionDto dto,
+                                                                  @CurrentSecurityContext
+                                                                          (expression = "authentication?.name") String name) {
+        return new ResponseEntity<>(collectionsService.saveAndGetDTO(dto, name), HttpStatus.OK);
     }
 
     @PostMapping("/{id}")
     ResponseEntity<FlashcardCollectionDto> saveFlashcards(@PathVariable Long id,
-                                                          @RequestBody List<CreateFlashcardDto> flashcards) {
+                                                          @RequestBody List<CreateFlashcardDto> flashcards,
+                                                          @CurrentSecurityContext
+                                                                  (expression = "authentication?.name") String name) {
         return new ResponseEntity<>(collectionsService
-                .addCards(id, flashcards), HttpStatus.OK);
+                .addCards(id, flashcards, name), HttpStatus.OK);
+    }
+
+    @DeleteMapping ("/collection/{id}")
+    ResponseEntity<HttpStatus> deleteFlashcardCollectionById(@PathVariable Long id,
+                                                          @CurrentSecurityContext
+                                                                  (expression = "authentication?.name") String name) {
+        collectionsService.deleteById(id, name);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping ("/{id}")
+    ResponseEntity<HttpStatus> deleteFlashcardById(@PathVariable Long id,
+                                                             @CurrentSecurityContext
+                                                                     (expression = "authentication?.name") String name) {
+        flashcardsService.deleteById(id, name);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

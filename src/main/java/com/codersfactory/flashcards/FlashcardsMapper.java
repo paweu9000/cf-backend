@@ -4,14 +4,12 @@ import com.codersfactory.flashcards.dto.CreateFlashcardCollectionDto;
 import com.codersfactory.flashcards.dto.CreateFlashcardDto;
 import com.codersfactory.flashcards.dto.FlashcardCollectionDto;
 import com.codersfactory.flashcards.dto.FlashcardDto;
+import com.codersfactory.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Mapper
 interface FlashcardsMapper {
@@ -26,12 +24,18 @@ interface FlashcardsMapper {
         return new FlashcardDto(card.getId(), card.getFront(), card.getBack(), card.getFlashcardCollection().getId());
     }
 
-    FlashcardCollection collectionToEntity(CreateFlashcardCollectionDto dto);
+    default FlashcardCollection collectionToEntity(CreateFlashcardCollectionDto dto, User user) {
+        FlashcardCollection flashcardCollection = new FlashcardCollection();
+        flashcardCollection.setTitle(dto.title());
+        flashcardCollection.setUser(user);
+        return flashcardCollection;
+    }
 
     default FlashcardCollectionDto collectionToDto(FlashcardCollection collection) {
         return new FlashcardCollectionDto(collection.getId(),
                 collection.getTitle(),
-                collection.getFlashcards().stream().map(this::toDto).toList());
+                collection.getFlashcards().stream().map(this::toDto).toList(),
+                collection.getUser().getId());
     }
 
     default FlashcardCollectionDto mapToSortedDto(FlashcardCollection collection) {
