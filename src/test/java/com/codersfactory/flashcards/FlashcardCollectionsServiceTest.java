@@ -9,8 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class FlashcardCollectionsServiceTest {
@@ -42,10 +41,15 @@ public class FlashcardCollectionsServiceTest {
         for (int i = 0; i < 10; i++) {
             collection.addCard(new Flashcard(Integer.toUnsignedLong(i), "front"+i, "back"+i, collection));
         }
-        FlashcardCollectionDto check = service.toDTO(collection);
+        FlashcardCollectionDto randomized = service.toDTO(collection);
+        FlashcardCollectionDto sorted = service.mapToSortedDto(collection);
 
-        assertNotNull(check);
-        assertEquals(check.title(), collection.getTitle());
-        assertEquals(10, check.flashcards().size());
+        assertNotNull(randomized);
+        assertEquals(randomized.title(), collection.getTitle());
+        assertEquals(10, randomized.flashcards().size());
+
+        for (int i = 0; i < collection.getSize(); i++) {
+            assertEquals(sorted.flashcards().get(i).id(), Integer.toUnsignedLong(i));
+        }
     }
 }
